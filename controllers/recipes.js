@@ -40,4 +40,77 @@ catch (error) {
 }
 });
 
+router.get("/:recipeId", async (req, res) => {
+    try {
+        const recipe = await Recipe.findById(req.params.recipeId);
+            if (recipe.owner.toString() === req.session.user._id) {
+                res.render("recipes/show.ejs", { recipe })
+            } else {
+                res.redirect("/")
+            }
+    } catch(error) {
+        console.log(error)
+        res.redirect("/")
+    }  
+})
+
+router.delete("/:recipeId", async (req, res) => {
+    try {
+      const recipe = await Recipe.findById(req.params.recipeId);
+      if (recipe.owner.toString() == req.session.user._id) {
+        await Recipe.findByIdAndDelete(req.params.recipeId);
+        res.redirect("/recipes");
+      } else {
+        res.redirect("/");
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect("/");
+    }
+});
+
+router.get("/:recipeId", async (req, res) => {
+    try{
+        const recipe = await Recipe.findById(req.params.recipeId);
+        if (recipe.owner.toString() == req.session.user._id) {
+            await Recipe.findByIdAndUpdate(req.params.recipeId);
+        res.redirect("/recipes");
+        } else {
+            res.redirect("/recipes")
+        }
+    } catch (error) {
+        console.log(error);
+        res.redirect("/");
+    }
+});
+
+router.get("/:recipeId/edit", async (req, res) => {
+    try {
+      const recipe = await Recipe.findById(req.params.recipeId);
+      if (recipe.owner.toString() == req.session.user._id) {
+        res.render("recipes/edit.ejs", { recipe });
+      } else {
+        res.redirect("/");
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect("/");
+    }
+});
+
+router.put("/:recipeId", async (req, res) => {
+    try {
+      const recipe = await Recipe.findById(req.params.recipeId);
+      if (recipe.owner.toString() == req.session.user._id) {
+        await Recipe.findByIdAndUpdate(req.params.recipeId, req.body);
+        res.redirect(`/recipes/${req.params.recipeId}`);
+      } else {
+        res.redirect("/");
+      }
+    } catch (error) {
+      console.log(error);
+      res.redirect("/");
+    }
+});
+
 module.exports = router;
