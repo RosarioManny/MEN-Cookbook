@@ -42,7 +42,7 @@ catch (error) {
 
 router.get("/:recipeId", async (req, res) => {
     try {
-        const recipe = await Recipe.findById(req.params.recipeId);
+        const recipe = await Recipe.findById(req.params.recipeId).populate("ingredients");
             if (recipe.owner.toString() === req.session.user._id) {
                 res.render("recipes/show.ejs", { recipe })
             } else {
