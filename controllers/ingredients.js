@@ -15,13 +15,28 @@ router.get("/", async (req,res) => {
     }
 })
 
-router.post("/", async (req,res) => {
-    try{
-
-    } catch(error) {
-        console.log(error)
-        res.redirect('/')
+router.post("/", async (req, res) => {
+    try {
+      const ingredientCreated = new Ingredient(req.body);
+      const ingredientsInDB = await Ingredient.find({});
+  
+      const found = ingredientsInDB.find((ingredient) => {
+        return (
+          ingredient.name.toLowerCase() === ingredientCreated.name.toLowerCase()
+        );
+      });
+  
+      if (found) {
+        return res.redirect("/ingredients");
+      }
+  
+      await ingredientCreated.save();
+      res.redirect("/ingredients");
+    } catch (error) {
+      console.log(error);
+      res.redirect("/");
     }
-})
+  });
+  
 
 module.exports = router;
