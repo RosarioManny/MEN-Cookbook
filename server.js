@@ -32,11 +32,6 @@ app.use(
     saveUninitialized: true,
   })
 );
-app.use(passUserToView);
-app.use('/auth', authController);
-app.use(isSignedIn);
-app.use('/recipes', recipesController);
-app.use('/ingredients', ingredientsController);
 
 app.get('/', (req, res) => {
   res.render('index.ejs', {
@@ -44,15 +39,11 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/vip-lounge', (req, res) => {
-  if (req.session.user) {
-    res.send(`Welcome to the party ${req.session.user.username}.`);
-  } else {
-    res.send('Sorry, no guests allowed.');
-  }
-});
-
+app.use(passUserToView);
 app.use('/auth', authController);
+app.use(isSignedIn); // This needs to be after /auth. 
+app.use('/recipes', recipesController);
+app.use('/ingredients', ingredientsController);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
