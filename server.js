@@ -33,13 +33,13 @@ app.use(
   })
 );
 
+app.use(passUserToView);
+
 app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    user: req.session.user,
-  });
+  res.render('index.ejs')
 });
 
-app.use(passUserToView);
+
 app.use('/auth', authController);
 app.use(isSignedIn); // This needs to be after /auth. 
 app.use('/recipes', recipesController);
